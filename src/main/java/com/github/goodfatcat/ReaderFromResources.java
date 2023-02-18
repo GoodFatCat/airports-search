@@ -1,6 +1,9 @@
 package com.github.goodfatcat;
 
+import java.util.List;
+
 public interface ReaderFromResources {
     Tuple getListFromFile(String fileName, int column);
-    String getLineFromFile(String fileName, int line);
+
+    List<String> getRequiredData(List<Airport<?>> list, String fileName);
 }
