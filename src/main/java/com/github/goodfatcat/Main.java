@@ -30,7 +30,7 @@ public class Main {
 
             long time = System.currentTimeMillis();
 
-            List<String> res = finder.find(scannedLine, tuple, reader);
+            List<String> res = finder.find(scannedLine, tuple, reader, "airports.csv");
 
             for (String line : res) {
                 System.out.println(line);

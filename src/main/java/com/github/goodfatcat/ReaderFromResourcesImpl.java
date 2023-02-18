@@ -3,6 +3,8 @@ package com.github.goodfatcat;
 import java.io.*;
 import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 
 public class ReaderFromResourcesImpl implements ReaderFromResources {
@@ -64,7 +66,9 @@ public class ReaderFromResourcesImpl implements ReaderFromResources {
     }
 
     @Override
-    public String getLineFromFile(String fileName, int line) {
+    public List<String> getRequiredData(List<Airport<?>> list, String fileName) {
+        list.sort(Comparator.comparingInt(Airport::getId));
+
         BufferedReader reader;
 
         try (InputStream in = getClass().getResourceAsStream("/" + fileName)) {
@@ -72,7 +76,17 @@ public class ReaderFromResourcesImpl implements ReaderFromResources {
                 reader = new BufferedReader(new InputStreamReader(in));
             else
                 throw new NoSuchFileException(fileName);
-            return reader.lines().skip(line - 1).findFirst().orElse(null);
+
+            List<String> res = new ArrayList<>(list.size());
+
+            int previous = 0;
+
+            for (Airport<?> airport : list) {
+                res.add(airport.toString() + "[" + reader.lines().skip(airport.getId() - previous - 1).findFirst().orElse(null) + "]");
+                previous = airport.getId();
+            }
+
+            return res;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
